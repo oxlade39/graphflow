@@ -1,11 +1,6 @@
-<!-- freemarker macros have to be imported into a namespace.  We strongly
-recommend sticking to 'spring' -->
 <#import "spring.ftl" as spring />
 <html>
-<head>
-	<link rel="stylesheet" href="../resources/css/style.css" type="text/css">
-	<link rel="stylesheet" href="../resources/css/smoothness/jquery-ui-1.8.10.custom.css" type="text/css">
-</head>
+<#include "/common/head.ftl" >
 <body>
 
     <h1>Hello World ${id}</h1>

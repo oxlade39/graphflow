@@ -59,6 +59,22 @@ public class Neo4JWorkflowGraphService implements WorkflowGraphService {
         new RelationshipBuilder(graphDatabaseService, nodeCache, workflowId).transition(transition.from(), transition.to());
     }
 
+    @Override
+    public List<UUID> listGraphs() {
+        ArrayList<UUID> uuids = new ArrayList<UUID>();
+        IndexHits<Node> nodeIndexHits = searchNodeIndex(String.format("%s:%s", NodeProperties.NODE_TYPE.name(), MyNodeTypes.WORKFLOW_START_NODE.name()));
+        System.out.println("nodeIndexHits = " + nodeIndexHits.size());
+        for (Node nodeIndexHit : nodeIndexHits) {
+            uuids.add(UUID.fromString((String) nodeIndexHit.getProperty(NodeProperties.NODE_ID.name())));
+        }
+        return uuids;
+    }
+
+    @Override
+    public WorkflowGraph findById(UUID uuid) {
+        return new WorkflowGraph(findStartNode(uuid));
+    }
+
     private IndexHits<Node> nodeForIdAndName(UUID workflowId, String nodeName) {
         return searchNodeIndex(String.format("%s:%s AND %s:%s", NodeProperties.NODE_ID.name(), workflowId, NodeProperties.NODE_NAME.name(), nodeName));
     }

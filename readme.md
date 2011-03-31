@@ -20,5 +20,5 @@ Unlike most of my work there isn't a great deal of tests. The tests included are
 1. Index, list of graphs ![index list of graphs](https://github.com/oxlade39/graphflow/raw/master/src/main/webapp/META-INF/resources/images/index%20list%20of%20graphs.png)
 2. Default generated graph ![default generated graph](https://github.com/oxlade39/graphflow/raw/master/src/main/webapp/META-INF/resources/images/default%20generated%20graph.png)
 3. Adding a transition ![adding a transition](https://github.com/oxlade39/graphflow/raw/master/src/main/webapp/META-INF/resources/images/adding%20a%20transition.png)
-4. Transition added ![transition added](https://github.com/oxlade39/graphflow/raw/master/src/main/webapp/META-INF/resources/images/adding%20a%20transition.png)
+4. Transition added ![transition added](https://github.com/oxlade39/graphflow/raw/master/src/main/webapp/META-INF/resources/images/transition%20added.png)
 5. Nice content negotiation. JSON backing view ![content negotiation](https://github.com/oxlade39/graphflow/raw/master/src/main/webapp/META-INF/resources/images/content%20negotiation.png)

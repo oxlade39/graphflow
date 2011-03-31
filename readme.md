@@ -7,6 +7,15 @@ I wanted to try out graph databases and Spring 3's REST support to provide a nic
 # Disclaimer #
 Unlike most of my work there isn't a great deal of tests. The tests included are for experimental discovery purposes. I used maven's [jetty plugin](http://docs.codehaus.org/display/JETTY/Maven+Jetty+Plugin) to drive most of the development.
 
+# Cool stuff #
+Spring 3's content negotiation was really simple and means the html for the page is very lightweight. The javascript in the page just requests the same page URL but as 'text/json' and Spring's content negotiation automatically serialises the view as JSON.
+
+HTML5 Canvas. It's suprising simple to build a nice looking dynamic page using the canvas API.
+
+[arbor.js](http://arborjs.org/) "is a graph visualization library", you can even enable "gravity" and allow nodes to fall into place. Try dragging nodes around and let them settle.
+
+Neo4j is a super fast, transactional graph database. The searching facilities are built on top of [lucene](http://lucene.apache.org/java/docs/index.html) which allows you to easily and quickly search and navigate the graph structure.
+
 # Technologies #
 *  [Spring 3](http://static.springsource.org/spring/docs/3.1.0.M1/spring-framework-reference/html/)
 *  [Neo4j](http://neo4j.org/)

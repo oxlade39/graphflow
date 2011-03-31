@@ -1,39 +1,32 @@
 package org.doxla.graphflow.domain.graph;
 
+import org.doxla.graphflow.domain.graph.type.NodeTypes;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.index.Index;
 
 import java.util.UUID;
 
-import static java.util.UUID.randomUUID;
-import static org.doxla.graphflow.domain.graph.MyIndices.TEXT_INDEX;
-import static org.doxla.graphflow.domain.graph.MyNodeTypes.POSITION_POINTER;
-import static org.doxla.graphflow.domain.graph.MyNodeTypes.WORKFLOW_START_NODE;
-import static org.doxla.graphflow.domain.graph.MyRelationshipTypes.CURRENT_POSITION;
-import static org.doxla.graphflow.domain.graph.NodeProperties.NODE_ID;
-import static org.doxla.graphflow.domain.graph.NodeProperties.NODE_NAME;
-import static org.doxla.graphflow.domain.graph.NodeProperties.NODE_TYPE;
+import static org.doxla.graphflow.domain.graph.index.MyIndices.TEXT_INDEX;
+import static org.doxla.graphflow.domain.graph.type.NodeProperties.*;
+import static org.doxla.graphflow.domain.graph.type.NodeTypes.POSITION_POINTER;
+import static org.doxla.graphflow.domain.graph.type.NodeTypes.WORKFLOW_START_NODE;
+import static org.doxla.graphflow.domain.graph.type.RelationshipTypes.CURRENT_POSITION;
 
 public class GraphBuilder {
 
     private final GraphDatabaseService graphDatabaseService;
     private final UUID id;
 
-    private NodeCache nodeCache = new NodeCache();
+    private final NodeCache nodeCache;
     private Index<Node> nodeIndex;
     private Node startNode;
-    private RelationshipBuilder relationshipBuilder;
 
-    public GraphBuilder(GraphDatabaseService graphDatabaseService) {
-        this(graphDatabaseService, randomUUID());
-    }
-
-    public GraphBuilder(GraphDatabaseService graphDatabaseService, UUID id) {
-        this.id = id;
+    public GraphBuilder(GraphDatabaseService graphDatabaseService, NodeCache nodeCache, UUID id) {
         this.graphDatabaseService = graphDatabaseService;
+        this.nodeCache = nodeCache;
+        this.id = id;
         nodeIndex = graphDatabaseService.index().forNodes(TEXT_INDEX.name(), TEXT_INDEX.configuration());
-        relationshipBuilder = new RelationshipBuilder(graphDatabaseService, nodeCache, id);
     }
 
     public GraphBuilder node(String name) {
@@ -41,11 +34,6 @@ public class GraphBuilder {
         if (existingNode == null) {
             workflowNode(name);
         }
-        return this;
-    }
-
-    public GraphBuilder transition(String from, String to, String... chain) {
-        relationshipBuilder.transition(from, to, chain);
         return this;
     }
 
@@ -70,7 +58,7 @@ public class GraphBuilder {
 
         setNodeId(node);
         setName(node, nodeName);
-        setNodeType(node, MyNodeTypes.WORKFLOW_NODE);
+        setNodeType(node, NodeTypes.WORKFLOW_NODE);
 
         nodeCache.add(nodeName, node);
         return node;
@@ -81,11 +69,11 @@ public class GraphBuilder {
     }
 
     private void setNodeId(Node node) {
-        setIndexedProperty(node, NODE_ID.name(), id.toString());
+        setIndexedProperty(node, NODE_ID, id.toString());
     }
 
-    private void setNodeType(Node node, MyNodeTypes nodeType) {
-        setIndexedProperty(node, NODE_TYPE.name(), nodeType.name());
+    private void setNodeType(Node node, String nodeType) {
+        setIndexedProperty(node, NODE_TYPE, nodeType);
     }
 
     private void setIndexedProperty(Node node, String propertyKey, String propertyValue) {
@@ -94,6 +82,6 @@ public class GraphBuilder {
     }
 
     private void setName(Node node, String name) {
-        setIndexedProperty(node, NODE_NAME.name(), name);
+        setIndexedProperty(node, NODE_NAME, name);
     }
 }

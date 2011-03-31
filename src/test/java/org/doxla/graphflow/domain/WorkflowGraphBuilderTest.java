@@ -1,13 +1,11 @@
 package org.doxla.graphflow.domain;
 
-import org.doxla.graphflow.domain.graph.MyIndices;
-import org.doxla.graphflow.domain.graph.NodeProperties;
+import org.doxla.graphflow.domain.graph.index.MyIndices;
+import org.doxla.graphflow.domain.graph.type.NodeProperties;
 import org.doxla.graphflow.domain.workflow.WorkflowGraph;
 import org.doxla.graphflow.domain.workflow.WorkflowGraphBuilder;
 import org.doxla.graphflow.domain.workflow.WorkflowTransition;
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.neo4j.graphdb.Node;
@@ -64,10 +62,10 @@ public class WorkflowGraphBuilderTest extends AbstractGraphDatabaseTestCase {
         Index<Node> index = db.index().forNodes(MyIndices.TEXT_INDEX.name());
         IndexHits<Node> indexHits = index.query("RELATIONSHIP_ID: 123*");
         for (Node indexHit : indexHits) {
-            if(indexHit.hasProperty(NodeProperties.NODE_NAME.name())){
+            if(indexHit.hasProperty(NodeProperties.NODE_NAME)){
                 System.out.printf("\nindexHit = name = %s, id = %s",
-                        indexHit.getProperty(NodeProperties.NODE_NAME.name()),
-                        indexHit.getProperty(NodeProperties.NODE_ID.name()));
+                        indexHit.getProperty(NodeProperties.NODE_NAME),
+                        indexHit.getProperty(NodeProperties.NODE_ID));
             }
         }
     }

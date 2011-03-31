@@ -1,6 +1,6 @@
 package org.doxla.graphflow.domain.workflow;
 
-import org.doxla.graphflow.domain.graph.MyIndices;
+import org.doxla.graphflow.domain.graph.index.MyIndices;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.doxla.graphflow.domain.graph.MyNodeTypes.POSITION_POINTER;
-import static org.doxla.graphflow.domain.graph.MyRelationshipTypes.CURRENT_POSITION;
-import static org.doxla.graphflow.domain.graph.MyRelationshipTypes.TRANSITIONS_TO;
-import static org.doxla.graphflow.domain.graph.NodeProperties.NODE_ID;
-import static org.doxla.graphflow.domain.graph.NodeProperties.NODE_NAME;
-import static org.doxla.graphflow.domain.graph.NodeProperties.NODE_TYPE;
+import static org.doxla.graphflow.domain.graph.type.NodeTypes.POSITION_POINTER;
+import static org.doxla.graphflow.domain.graph.type.RelationshipTypes.CURRENT_POSITION;
+import static org.doxla.graphflow.domain.graph.type.RelationshipTypes.TRANSITIONS_TO;
+import static org.doxla.graphflow.domain.graph.type.NodeProperties.NODE_ID;
+import static org.doxla.graphflow.domain.graph.type.NodeProperties.NODE_NAME;
+import static org.doxla.graphflow.domain.graph.type.NodeProperties.NODE_TYPE;
 
 public class WorkflowGraph {
 
@@ -25,7 +25,7 @@ public class WorkflowGraph {
     }
 
     public UUID getId() {
-        return UUID.fromString((String) startNode.getProperty(NODE_ID.name()));
+        return UUID.fromString((String) startNode.getProperty(NODE_ID));
     }
 
     public WorkflowStep getStartStep() {
@@ -50,13 +50,13 @@ public class WorkflowGraph {
     }
 
     public static WorkflowStep nodeToStep(Node startNode1) {
-        return WorkflowStep.step((String) startNode1.getProperty(NODE_NAME.name()));
+        return WorkflowStep.step((String) startNode1.getProperty(NODE_NAME));
     }
 
     private Node currentPositionNode() {
         IndexHits<Node> indexHits = index().query(String.format("%s:%s AND %s:%s",
-                                                    NODE_ID.name(), getId().toString(),
-                                                    NODE_TYPE, POSITION_POINTER.name()));
+                                                    NODE_ID, getId().toString(),
+                                                    NODE_TYPE, POSITION_POINTER));
         Node positionPointer = indexHits.getSingle();
         Relationship currentPositionRelationship = positionPointer.getSingleRelationship(CURRENT_POSITION, Direction.OUTGOING);
         return currentPositionRelationship.getEndNode();

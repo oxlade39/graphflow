@@ -1,4 +1,4 @@
-package org.doxla.graphflow.domain.graph;
+package org.doxla.graphflow.domain.graph.index;
 
 import java.util.Map;
 

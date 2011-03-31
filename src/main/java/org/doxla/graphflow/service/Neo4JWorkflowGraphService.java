@@ -1,6 +1,7 @@
 package org.doxla.graphflow.service;
 
 import org.doxla.graphflow.domain.graph.*;
+import org.doxla.graphflow.domain.workflow.WorkflowGraphBuilder;
 import org.doxla.graphflow.domain.workflow.WorkflowStep;
 import org.doxla.graphflow.domain.workflow.WorkflowTransition;
 import org.doxla.graphflow.domain.workflow.WorkflowGraph;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.doxla.graphflow.domain.workflow.WorkflowGraph.nodeToStep;
+import static org.doxla.graphflow.domain.workflow.WorkflowStep.step;
+import static org.doxla.graphflow.domain.workflow.WorkflowTransitionBuilder.transition;
 
 @Transactional
 public class Neo4JWorkflowGraphService implements WorkflowGraphService {
@@ -51,8 +54,16 @@ public class Neo4JWorkflowGraphService implements WorkflowGraphService {
     @Override
     public void addTransition(WorkflowGraph workflowGraph, WorkflowTransition transition) {
         UUID workflowId = workflowGraph.getId();
-        Node to = nodeForIdAndName(workflowId, transition.to()).getSingle();
         Node from = nodeForIdAndName(workflowId, transition.from()).getSingle();
+        IndexHits<Node> toNode = nodeForIdAndName(workflowId, transition.to());
+        Node to;
+        if(toNode.hasNext()) {
+            to = toNode.getSingle();
+        } else {
+            new GraphBuilder(graphDatabaseService, workflowId).node(transition.to()).build();
+            to = nodeForIdAndName(workflowId, transition.to()).getSingle();
+        }
+
         NodeCache nodeCache = new NodeCache();
         nodeCache.add(transition.to(), to);
         nodeCache.add(transition.from(), from);
@@ -73,6 +84,17 @@ public class Neo4JWorkflowGraphService implements WorkflowGraphService {
     @Override
     public WorkflowGraph findById(UUID uuid) {
         return new WorkflowGraph(findStartNode(uuid));
+    }
+
+    @Override
+    public UUID create() {
+        WorkflowGraph start = new WorkflowGraphBuilder(graphDatabaseService)
+                                    .with(step("one"))
+                                    .with(step("two"))
+                                    .start(step("one"))
+                                    .with(transition().from("one").to("two"))
+                                    .build();
+        return start.getId();
     }
 
     private IndexHits<Node> nodeForIdAndName(UUID workflowId, String nodeName) {

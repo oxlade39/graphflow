@@ -24,11 +24,6 @@ public class MvcFeatures {
         return new MvcResources("/resources/**", "META-INF/resources/");
     }
 
-//    @Feature
-//    public MvcViewControllers viewController() {
-//        return new MvcViewControllers("/", "home");
-//    }
-
     @Feature
     public ComponentScanSpec componentScan() {
         return new ComponentScanSpec("org.doxla.graphflow.controller").excludeFilters(

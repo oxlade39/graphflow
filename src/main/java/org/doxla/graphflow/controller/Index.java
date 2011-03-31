@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
-@RequestMapping("/index")
+@RequestMapping("/")
 public class Index {
 
     @Autowired

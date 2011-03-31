@@ -15,4 +15,6 @@ public interface WorkflowGraphService {
     List<UUID> listGraphs();
 
     WorkflowGraph findById(UUID uuid);
+
+    UUID create();
 }

@@ -67,16 +67,11 @@
 
           // draw a rectangle centered at pt
           var w = 25;
-          ctx.fillStyle = (node.data.alone) ? "orange" : "blue"
+          ctx.fillStyle = (node.data.label == that.currentPositionName) ? "orange" : "blue"
           ctx.beginPath();
           ctx.arc(pt.x, pt.y, w, 0, Math.PI*2, true);
           ctx.closePath();
           ctx.fill();
-//          var rect = ctx.fillRect(pt.x-w/2, pt.y-w/2, w,w)
-//            rect.shadowColor="#bbbbbb";
-//            rect.shadowBlur = 20;
-//            rect.shadowOffsetX = 1;
-//            rect.shadowOffsetY = 1;
           ctx.textAlign = 'center';
           ctx.fillStyle = 'black';
           ctx.fillText(node.data.label, pt.x, pt.y, 2*w);
@@ -99,11 +94,12 @@
             if(e.shiftKey) {
                 var addStep = $('#addStep');
                 if (dragged && dragged.node !== null){
-                    var fromInput = $('input[name="from"]');
-                    console.log('fromInput ' + fromInput);
+                    var fromInput = $('input[name="from"]', addStep);
                     fromInput.val(dragged.node.data.label);
                 }
                 addStep.dialog({ modal: true });;
+                $('input[name="from"]', addStep).attr('readonly','disabled');
+                $('input[name="to"]', addStep).focus();
             } else {
                 if (dragged && dragged.node !== null){
                   // while we're dragging, don't let physics move the node
@@ -144,6 +140,8 @@
 
       },
 
+      currentPositionName: ''
+
     }
     return that
   }
@@ -156,16 +154,23 @@
     var jsonUrl = window.location + '';
 
     $.getJSON(jsonUrl, function(data) {
+      sys.renderer.currentPositionName = data.graph.currentPosition.name;
       $.each(data.transitions, function(index, transition) {
-        sys.addEdge(transition.to, transition.from, {to: transition.to, from: transition.from});
+        sys.addEdge(transition.to, transition.from, {
+            to: transition.to,
+            from: transition.from
+        });
       });
 
     });
 
     $('#addStep > form').submit(function(e) {
         e.preventDefault();
-        $.post($(this).attr("action"), $(this).serialize(), function(response) {
-            console.log('got response ' + response.transitions)
+        var form = $(this)
+        $.post(form.attr("action"), form.serialize(), function(response) {
+            var toName = form.find("input[name=to]").val();
+            var fromName = form.find("input[name=from]").val();
+            sys.addEdge(toName, fromName, {to: toName, from: fromName});
         }, "json");
         $('#addStep').dialog('close');
     });

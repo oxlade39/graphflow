@@ -18,7 +18,7 @@ import static org.doxla.graphflow.domain.graph.NodeProperties.NODE_TYPE;
 public class GraphBuilder {
 
     private final GraphDatabaseService graphDatabaseService;
-    private final UUID id = randomUUID();
+    private final UUID id;
 
     private NodeCache nodeCache = new NodeCache();
     private Index<Node> nodeIndex;
@@ -26,6 +26,11 @@ public class GraphBuilder {
     private RelationshipBuilder relationshipBuilder;
 
     public GraphBuilder(GraphDatabaseService graphDatabaseService) {
+        this(graphDatabaseService, randomUUID());
+    }
+
+    public GraphBuilder(GraphDatabaseService graphDatabaseService, UUID id) {
+        this.id = id;
         this.graphDatabaseService = graphDatabaseService;
         nodeIndex = graphDatabaseService.index().forNodes(TEXT_INDEX.name(), TEXT_INDEX.configuration());
         relationshipBuilder = new RelationshipBuilder(graphDatabaseService, nodeCache, id);

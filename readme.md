@@ -7,6 +7,8 @@ I wanted to try out graph databases and Spring 3's REST support to provide a nic
 # Disclaimer #
 Unlike most of my work there isn't a great deal of tests. The tests included are for experimental discovery purposes. I used maven's [jetty plugin](http://docs.codehaus.org/display/JETTY/Maven+Jetty+Plugin) to drive most of the development.
 
+The code here is by no means production ready.
+
 # Cool stuff #
 Spring 3's content negotiation was really simple and means the html for the page is very lightweight. The javascript in the page just requests the same page URL but as 'text/json' and Spring's content negotiation automatically serialises the view as JSON.
 

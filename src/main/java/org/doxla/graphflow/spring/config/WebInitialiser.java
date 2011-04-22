@@ -14,7 +14,12 @@ public class WebInitialiser implements ApplicationContextInitializer<Configurabl
         System.out.println("WebInitialiser.initialize");
         CloudEnvironment env = new CloudEnvironment();
         if (env.getInstanceInfo() != null) {
-            LOG.info("Detected cloud environment. Cloud API: " + env.getCloudApiUri());
+            LOG.info("Detected cloud environment");
+            LOG.info("Cloud API: " + env.getCloudApiUri());
+            LOG.info("Cloud InstanceInfo Name: " + env.getInstanceInfo().getName());
+            LOG.info("Cloud InstanceInfo Host: " + env.getInstanceInfo().getHost());
+            LOG.info("Cloud InstanceInfo URIs: " + env.getInstanceInfo().getUris());
+
             applicationContext.getEnvironment().setActiveProfiles("cloud");
         } else {
             LOG.info("Detected non cloud environment setting default profile");

@@ -24,6 +24,8 @@
         </form>
     </div>
 
+    <#include "/common/githubRibbon.ftl" >
+
     <script src="<@spring.url "/resources/js/jquery-1.4.4.min.js"/>"></script>
     <script src="<@spring.url "/resources/js/jquery-ui-1.8.10.custom.min.js"/>"></script>
     <script src="<@spring.url "/resources/js/arbor.js"/>"></script>

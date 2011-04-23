@@ -16,5 +16,6 @@
             </li>
         <ul>
     </div>
+    <#include "/common/githubRibbon.ftl" >
 </body>
 </html>

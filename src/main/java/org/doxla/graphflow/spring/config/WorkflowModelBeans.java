@@ -2,13 +2,17 @@ package org.doxla.graphflow.spring.config;
 
 import org.doxla.graphflow.domain.workflow.WorkflowGraph;
 import org.doxla.graphflow.service.Neo4JWorkflowGraphService;
-import org.doxla.graphflow.service.WorkflowGraphService;
+import org.doxla.graphflow.service.WorkflowGraphFactory;
 import org.doxla.graphflow.domain.workflow.WorkflowGraphBuilder;
+import org.doxla.graphflow.service.WorkflowGraphService;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 
 import static org.doxla.graphflow.domain.workflow.WorkflowStep.step;
 import static org.doxla.graphflow.domain.workflow.WorkflowTransitionBuilder.transition;
@@ -24,7 +28,8 @@ public class WorkflowModelBeans {
         return new WorkflowGraphBuilder(graphDatabaseService);
     }
 
-    @Bean @Transactional
+//    @PostConstruct
+//    @Transactional
     public WorkflowGraph exampleGraph() {
         WorkflowGraphBuilder graphBuilder = workflowGraphBuilder();
         graphBuilder.start(step("start"));
@@ -50,6 +55,7 @@ public class WorkflowModelBeans {
 
         return graphBuilder.build();
     }
+
 
     @Bean
     public WorkflowGraphService workflowGraphService() {

@@ -18,15 +18,16 @@ public class GettingStartedTest extends AbstractGraphDatabaseTestCase {
         UUID id = UUID.randomUUID();
         GraphBuilder graphBuilder = new GraphBuilder(db, nodeCache, id);
         RelationshipBuilder relationshipBuilder = new RelationshipBuilder(db, nodeCache, id);
-        graphBuilder.node("start");
-        graphBuilder.node("validate");
-        graphBuilder.node("beginProvisioning");
-        graphBuilder.node("rejected");
-        graphBuilder.node("sentToBt");
-        graphBuilder.node("accepted");
-        graphBuilder.node("confirmed");
-        graphBuilder.node("btComplete");
-        graphBuilder.node("complete");
+        graphBuilder
+                .node("start")
+                .node("validate")
+                .node("beginProvisioning")
+                .node("rejected")
+                .node("sentToBt")
+                .node("accepted")
+                .node("confirmed")
+                .node("btComplete")
+                .node("complete");
 
         relationshipBuilder.transition(
                 "start", "validate",
@@ -39,5 +40,6 @@ public class GettingStartedTest extends AbstractGraphDatabaseTestCase {
         graphBuilder.startsIn("start");
 
         Node workflow = graphBuilder.build();
+
     }
 }

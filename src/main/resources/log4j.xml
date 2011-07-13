@@ -28,11 +28,11 @@
     </logger>
 
     <logger name="org.springframework">
-        <level value="ERROR"/>
+        <level value="TRACE"/>
     </logger>
 
     <root>
-        <level value="INFO"/>
+        <level value="TRACE"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE" />
     </root>

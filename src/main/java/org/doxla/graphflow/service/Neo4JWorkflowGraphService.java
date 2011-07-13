@@ -1,7 +1,7 @@
 package org.doxla.graphflow.service;
 
+import org.apache.log4j.Logger;
 import org.doxla.graphflow.domain.graph.*;
-import org.doxla.graphflow.domain.graph.index.MyIndices;
 import org.doxla.graphflow.domain.graph.type.NodeTypes;
 import org.doxla.graphflow.domain.graph.type.NodeProperties;
 import org.doxla.graphflow.domain.graph.type.RelationshipProperties;
@@ -25,17 +25,22 @@ import static org.doxla.graphflow.domain.workflow.WorkflowTransitionBuilder.tran
 
 @Transactional
 public class Neo4JWorkflowGraphService implements WorkflowGraphService {
+
+    private Logger log = Logger.getLogger(getClass());
+
     private final GraphDatabaseService graphDatabaseService;
+    private final WorkflowGraphSearch workflowGraphSearch;
 
     public Neo4JWorkflowGraphService(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
+        workflowGraphSearch = new WorkflowGraphSearch(graphDatabaseService);
     }
 
     @Override
     public List<WorkflowStep> listSteps(WorkflowGraph graph) {
         List<WorkflowStep> allSteps = new ArrayList<WorkflowStep>();
         UUID workflowId = graph.getId();
-        IndexHits<Node> hits = searchNodeIndex(String.format("%s:%s AND %s:(%s || %s)", NodeProperties.NODE_ID, workflowId,
+        IndexHits<Node> hits = workflowGraphSearch.searchNodeIndex(String.format("%s:%s AND %s:(%s || %s)", NodeProperties.NODE_ID, workflowId,
                 NodeProperties.NODE_TYPE, NodeTypes.WORKFLOW_START_NODE, NodeTypes.WORKFLOW_NODE));
         for (Node hit : hits) {
             allSteps.add(nodeToStep(hit));
@@ -46,7 +51,7 @@ public class Neo4JWorkflowGraphService implements WorkflowGraphService {
     @Override
     public List<WorkflowTransition> listTransitions(WorkflowGraph graph) {
         ArrayList<WorkflowTransition> transitions = new ArrayList<WorkflowTransition>();
-        IndexHits<Relationship> relationshipIndexHits = searchRelationshipIndex(String.format("%s:%s", RelationshipProperties.RELATIONSHIP_ID, graph.getId()));
+        IndexHits<Relationship> relationshipIndexHits = workflowGraphSearch.searchRelationshipIndex(String.format("%s:%s", RelationshipProperties.RELATIONSHIP_ID, graph.getId()));
         for (Relationship relationshipIndexHit : relationshipIndexHits) {
             String from = nodeToStep(relationshipIndexHit.getStartNode()).name();
             String to = nodeToStep(relationshipIndexHit.getEndNode()).name();
@@ -77,8 +82,8 @@ public class Neo4JWorkflowGraphService implements WorkflowGraphService {
     @Override
     public List<UUID> listGraphs() {
         ArrayList<UUID> uuids = new ArrayList<UUID>();
-        IndexHits<Node> nodeIndexHits = searchNodeIndex(String.format("%s:%s", NodeProperties.NODE_TYPE, NodeTypes.WORKFLOW_START_NODE));
-        System.out.println("nodeIndexHits = " + nodeIndexHits.size());
+        IndexHits<Node> nodeIndexHits = workflowGraphSearch.searchNodeIndex(String.format("%s:%s", NodeProperties.NODE_TYPE, NodeTypes.WORKFLOW_START_NODE));
+        log.trace("nodeIndexHits = " + nodeIndexHits.size());
         for (Node nodeIndexHit : nodeIndexHits) {
             uuids.add(UUID.fromString((String) nodeIndexHit.getProperty(NodeProperties.NODE_ID)));
         }
@@ -102,20 +107,20 @@ public class Neo4JWorkflowGraphService implements WorkflowGraphService {
     }
 
     private IndexHits<Node> nodeForIdAndName(UUID workflowId, String nodeName) {
-        return searchNodeIndex(String.format("%s:%s AND %s:%s", NodeProperties.NODE_ID, workflowId, NodeProperties.NODE_NAME, nodeName));
+        return workflowGraphSearch.searchNodeIndex(String.format("%s:%s AND %s:%s", NodeProperties.NODE_ID, workflowId, NodeProperties.NODE_NAME, nodeName));
     }
 
     private Node findStartNode(UUID workflowId) {
         String query = String.format("%s:%s AND %s:%s", NodeProperties.NODE_ID, workflowId, NodeProperties.NODE_TYPE, NodeTypes.WORKFLOW_START_NODE);
-        IndexHits<Node> indexHits = searchNodeIndex(query);
+        IndexHits<Node> indexHits = workflowGraphSearch.searchNodeIndex(query);
         return indexHits.getSingle();
     }
 
     private IndexHits<Node> searchNodeIndex(String query) {
-        return graphDatabaseService.index().forNodes(MyIndices.TEXT_INDEX.name()).query(query);
+        return workflowGraphSearch.searchNodeIndex(query);
     }
 
     private IndexHits<Relationship> searchRelationshipIndex(String query) {
-        return graphDatabaseService.index().forRelationships(MyIndices.TEXT_INDEX.name()).query(query);
+        return workflowGraphSearch.searchRelationshipIndex(query);
     }
 }

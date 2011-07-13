@@ -7,7 +7,7 @@ import org.doxla.graphflow.domain.workflow.WorkflowStep;
 import java.util.List;
 import java.util.UUID;
 
-public interface WorkflowGraphService {
+public interface WorkflowGraphService extends WorkflowGraphFactory {
     List<WorkflowStep> listSteps(WorkflowGraph graph);
     List<WorkflowTransition> listTransitions(WorkflowGraph graph);
     void addTransition(WorkflowGraph workflowGraph, WorkflowTransition transition);
@@ -16,5 +16,4 @@ public interface WorkflowGraphService {
 
     WorkflowGraph findById(UUID uuid);
 
-    UUID create();
 }

@@ -75,7 +75,7 @@ public class WorkflowGraphBuilderTest extends AbstractGraphDatabaseTestCase {
     public void canCreateMillions() throws Exception {
         endTransaction();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
         for (int i = 0; i < 1000; i++) {
             executorService.submit(new Runnable() {
                 @Override

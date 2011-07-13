@@ -11,7 +11,6 @@ public class WebInitialiser implements ApplicationContextInitializer<Configurabl
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-        System.out.println("WebInitialiser.initialize");
         CloudEnvironment env = new CloudEnvironment();
         if (env.getInstanceInfo() != null) {
             LOG.info("Detected cloud environment");

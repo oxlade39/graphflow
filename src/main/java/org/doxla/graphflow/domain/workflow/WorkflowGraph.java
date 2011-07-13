@@ -1,5 +1,6 @@
 package org.doxla.graphflow.domain.workflow;
 
+import org.apache.log4j.Logger;
 import org.doxla.graphflow.domain.graph.index.MyIndices;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.index.Index;
@@ -17,6 +18,7 @@ import static org.doxla.graphflow.domain.graph.type.NodeProperties.NODE_NAME;
 import static org.doxla.graphflow.domain.graph.type.NodeProperties.NODE_TYPE;
 
 public class WorkflowGraph {
+    private Logger log = Logger.getLogger(getClass());
 
     private final Node startNode;
 
@@ -43,10 +45,16 @@ public class WorkflowGraph {
         for (Node node : traverse) {
             transitions.add(nodeToTransition(node));
         }
-        for (WorkflowTransition transition : transitions) {
-            System.out.println("got transition = " + transition);
-        }
+        logTransitions(transitions);
         return transitions;
+    }
+
+    private void logTransitions(List<WorkflowTransition> transitions) {
+        if (log.isTraceEnabled()) {
+            for (WorkflowTransition transition : transitions) {
+                log.trace("got transition = " + transition);
+            }
+        }
     }
 
     public static WorkflowStep nodeToStep(Node startNode1) {
@@ -55,8 +63,8 @@ public class WorkflowGraph {
 
     private Node currentPositionNode() {
         IndexHits<Node> indexHits = index().query(String.format("%s:%s AND %s:%s",
-                                                    NODE_ID, getId().toString(),
-                                                    NODE_TYPE, POSITION_POINTER));
+                NODE_ID, getId().toString(),
+                NODE_TYPE, POSITION_POINTER));
         Node positionPointer = indexHits.getSingle();
         Relationship currentPositionRelationship = positionPointer.getSingleRelationship(CURRENT_POSITION, Direction.OUTGOING);
         return currentPositionRelationship.getEndNode();

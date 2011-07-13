@@ -6,11 +6,13 @@ import org.neo4j.kernel.impl.transaction.UserTransactionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.transaction.UserTransaction;
 
 @Configuration
+@EnableTransactionManagement
 public class TransactionBeans {
 
     @Autowired

@@ -25,6 +25,10 @@ public class GraphFlows {
     @Autowired
     WorkflowGraphService workflowGraphService;
 
+    public GraphFlows() {
+        System.out.println("GraphFlows.GraphFlows");
+    }
+
     @RequestMapping(value = "/{flowId}", method = GET)
     public ModelAndView flow(@PathVariable String flowId) {
         ModelAndView graph = new ModelAndView("graph");
@@ -37,8 +41,8 @@ public class GraphFlows {
     }
 
     @RequestMapping(value = "/{flowId}/transition", method = POST)
-    public String createTransition(@RequestParam String to, @RequestParam String from, @PathVariable String flowId) {
-        workflowGraphService.addTransition(graphFor(flowId), transition().to(to).from(from).build());
+    public String createTransition(WorkflowTransition transition, @PathVariable String flowId) {
+        workflowGraphService.addTransition(graphFor(flowId), transition);
         return redirect("/flow/%s", flowId);
     }
 

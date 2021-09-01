@@ -52,7 +52,7 @@
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
             <!-- Milestones are released regularly -->
-            <version>1.3.M03</version>
+            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.cloudfoundry</groupId>
